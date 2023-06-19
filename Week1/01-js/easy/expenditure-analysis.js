@@ -12,8 +12,11 @@ function calculateTotalSpentByCategory(transactions) {
   let tempObj = {};
   transactions.forEach((item) => {
     const { category, price } = item;
-    tempObj[category] =
-      tempObj[category] > 0 ? tempObj[category] + price : price;
+    if (tempObj[category]) {
+      tempObj[category] = tempObj[category] + price;
+    } else {
+      tempObj[category] = price;
+    }
   });
   let result = [];
   result = Object.entries(tempObj).map(([category, totalSpent]) => ({

@@ -34,4 +34,8 @@ describe('isAnagram', () => {
 		expect(isAnagram('hello', 'hello!')).toBe(false);
 		expect(isAnagram('openai!', 'open')).toBe(false);
 	});
+
+	test('returns false for same set of alphabet but different frequency', () => {
+		expect(isAnagram('abcc', 'abbc')).toBe(false);
+	});
 });
