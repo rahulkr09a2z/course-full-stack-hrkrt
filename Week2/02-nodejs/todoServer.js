@@ -39,11 +39,143 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-const express = require('express');
-const bodyParser = require('body-parser');
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
+
+const bodyParser = require("body-parser");
 
 const app = express();
 
 app.use(bodyParser.json());
+
+const fileName = "todos.json";
+const filePath = path.join(__dirname, "./files", fileName);
+
+function writeErrHandler(err) {
+  if (err) console.log("File Write Error", err);
+}
+function unknownErrHandler(err) {
+  if (err) console.log("Something Went Wrong", err);
+}
+
+function fileWriteHandler(newData) {
+  fs.writeFile(
+    filePath,
+    JSON.stringify(newData),
+    { encoding: "utf8" },
+    writeErrHandler
+  );
+}
+
+const getData = async () => {
+  return new Promise((resolve) => {
+    fs.readFile(filePath, { encoding: "utf8" }, (err, data) => {
+      if (err) {
+        if (err.code === "ENOENT") {
+          const emptyData = [];
+          fileWriteHandler(emptyData);
+          console.log("File created successfully.");
+          return emptyData;
+        }
+      }
+      resolve(JSON.parse(data)||[]);
+    });
+  });
+};
+
+const getAllTodosData = (req, res) => {
+  getData()
+    .then((data) => {
+
+      return res.send(data);
+    })
+    .catch(unknownErrHandler);
+};
+
+const getTodoData = (req, res) => {
+  const todoId = req.params.todoId;
+  getData()
+    .then((data) => {
+      const elIndex = data.findIndex((item) => item.id === todoId);
+      if (todoId > -1) {
+        return res.json(data[elIndex]);
+      }
+      return res.status(404).send("Not Found");
+    })
+    .catch(unknownErrHandler);
+};
+
+const addTodoHandler = (req, res) => {
+  const { title, description } = req.body;
+  getData()
+    .then((dbData) => {
+      let tempData = [...dbData];
+      let newId = Date.now().toString();
+      tempData.push({
+        id: newId,
+        title,
+        description,
+      });
+      res.status(201).json({ id: newId });
+      fileWriteHandler(tempData);
+    })
+    .catch((err)=>{
+      unknownErrHandler(err)
+    });
+};
+const updateTodoHandler = (req, res) => {
+  const { title, description } = req.body;
+  let targetTodoItemId = req.params.todoId;
+  getData()
+    .then((dbData) => {
+      let tempData = [...dbData];
+      let targetIndex = tempData.findIndex(
+        (item) => item.id === targetTodoItemId
+      );
+      if (targetIndex > -1) {
+        tempData[targetIndex] = {
+          id: tempData[targetIndex].id,
+          title,
+          description,
+        };
+        fileWriteHandler(tempData);
+        res.send();
+      } else {
+        res.status(404).send("Not Found");
+      }
+    })
+    .catch(unknownErrHandler);
+};
+
+const deleteTodoHandler = (req, res) => {
+  let targetTodoItemId = req.params.todoId;
+
+  getData()
+    .then((dbData) => {
+      let tempData = [...dbData];
+      let targetIndex = tempData.findIndex(
+        (item) => item.id === targetTodoItemId
+      );
+      if (targetIndex > -1) {
+        tempData.splice(targetIndex, 1);
+        fileWriteHandler(tempData);
+        res.send();
+      } else {
+        res.status(404).send("Not Found");
+      }
+    })
+    .catch(unknownErrHandler);
+};
+
+app.get("/todos", getAllTodosData);
+app.get("/todos/:todoId", getTodoData);
+app.post("/todos", addTodoHandler);
+app.put("/todos/:todoId", updateTodoHandler);
+app.delete("/todos/:todoId", deleteTodoHandler);
+
+app.all("*", (req, res) => {
+  res.status(404).send("Route not found");
+});
 
 module.exports = app;

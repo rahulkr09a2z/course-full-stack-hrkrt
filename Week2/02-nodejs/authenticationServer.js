@@ -29,9 +29,77 @@
   Testing the server - run `npm run test-authenticationServer` command in terminal
  */
 
-const express = require("express")
+const express = require("express");
+const bodyParser = require("body-parser");
 const PORT = 3000;
 const app = express();
 // write your logic here, DONT WRITE app.listen(3000) when you're running tests, the tests will automatically start the server
+let users = [];
+
+function findUser(recvEmail) {
+  return users.findIndex((user) => user.email === recvEmail);
+}
+
+function checkIfUserValid(email, password) {
+  let userIndex = findUser(email);
+  let userDetails = users[userIndex];
+
+  if (userIndex > -1 && userDetails.password === password) return userDetails;
+  return null;
+}
+
+const signupHandler = (req, res, next) => {
+  const { email, password, firstName, lastName } = req.body;
+  if (findUser(email) > -1) {
+    res.status(400);
+  } else {
+    users.push({
+      email,
+      password,
+      firstName,
+      lastName,
+      id: `${lastName}-${new Date()}`,
+    });
+    res.status(201).send("Signup successful");
+  }
+};
+
+const loginHandler = (req, res, next) => {
+  const { email, password } = req.body;
+  let userDetails = checkIfUserValid(email, password);
+
+  if (userDetails) {
+    const { id: authToken, firstName, lastName } = userDetails;
+    res.json({ authToken, email, firstName, lastName });
+  } else {
+    res.status(401);
+  }
+};
+
+const getAllUsersData = (req, res, next) => {
+  const { email, password } = req.headers;
+  let userDetails = checkIfUserValid(email, password);
+
+  if (userDetails) {
+    let usersList = users.map((item) => ({
+      firstName: item.firstName,
+      lastName: item.lastName,
+      email: item.email,
+    }));
+    res.json({ users: usersList });
+  } else {
+    res.status(401).send("Unauthorized");
+  }
+};
+
+app.use(bodyParser.json());
+
+app.post("/signup", signupHandler);
+app.post("/login", loginHandler);
+app.get("/data", getAllUsersData);
+// error handler
+app.all("*", (req, res) => {
+  res.status(404).send("Route not found");
+});
 
 module.exports = app;
