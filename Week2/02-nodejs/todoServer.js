@@ -42,11 +42,13 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const cors = require("cors");
 
 const bodyParser = require("body-parser");
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 
 const fileName = "todos.json";
@@ -79,7 +81,7 @@ const getData = async () => {
           return emptyData;
         }
       }
-      resolve(JSON.parse(data)||[]);
+      resolve(JSON.parse(data) || []);
     });
   });
 };
@@ -87,7 +89,6 @@ const getData = async () => {
 const getAllTodosData = (req, res) => {
   getData()
     .then((data) => {
-
       return res.send(data);
     })
     .catch(unknownErrHandler);
@@ -120,8 +121,8 @@ const addTodoHandler = (req, res) => {
       res.status(201).json({ id: newId });
       fileWriteHandler(tempData);
     })
-    .catch((err)=>{
-      unknownErrHandler(err)
+    .catch((err) => {
+      unknownErrHandler(err);
     });
 };
 const updateTodoHandler = (req, res) => {
@@ -140,7 +141,7 @@ const updateTodoHandler = (req, res) => {
           description,
         };
         fileWriteHandler(tempData);
-        res.send();
+        res.send("Updated Successfully");
       } else {
         res.status(404).send("Not Found");
       }
@@ -178,4 +179,5 @@ app.all("*", (req, res) => {
   res.status(404).send("Route not found");
 });
 
-module.exports = app;
+// module.exports = app;
+app.listen(8080);
