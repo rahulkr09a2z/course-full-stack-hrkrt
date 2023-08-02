@@ -1,15 +1,15 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 
 import { ApiClient } from "@courseApp/utils/apiClient";
 import { UserEndPoints } from "@courseApp/constants/endPoints";
 
 function Register() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [pswd, setPswd] = useState("");
 
   const handleSignupClick = async () => {
     const registerData = JSON.stringify({
-      username: email,
+      username,
       password: pswd,
     });
     try {
@@ -17,7 +17,7 @@ function Register() {
         UserEndPoints.adminSignup(),
         registerData
       );
-     alert(response.data.message)
+      alert(response.data.message);
     } catch (err) {
       alert(err);
     }
@@ -27,8 +27,10 @@ function Register() {
     <div>
       <h1>Register to the website</h1>
       <br />
-      <input type={"text"} onChange={(e) => setEmail(e.target.value)} />
+      Username -{" "}
+      <input type={"text"} onChange={(e) => setUsername(e.target.value)} />
       <br />
+      Password -{" "}
       <input type={"password"} onChange={(e) => setPswd(e.target.value)} />
       <br />
       <button onClick={handleSignupClick}>Register</button>

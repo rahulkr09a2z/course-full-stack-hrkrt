@@ -5,12 +5,12 @@ import { UserEndPoints } from "@courseApp/constants/endPoints";
 import { setBearerToken } from "@courseApp/utils/tokenHelpers";
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [pswd, setPswd] = useState("");
 
   const handleLoginClick = async () => {
     const registerData = {
-      username: email,
+      username,
       password: pswd,
     };
     try {
@@ -35,7 +35,8 @@ function Login() {
     <div>
       <h1>Login to admin dashboard</h1>
       <br />
-      Email - <input type={"text"} onChange={(e) => setEmail(e.target.value)} />
+      Username -{" "}
+      <input type={"text"} onChange={(e) => setUsername(e.target.value)} />
       <br />
       Password -{" "}
       <input type={"password"} onChange={(e) => setPswd(e.target.value)} />
