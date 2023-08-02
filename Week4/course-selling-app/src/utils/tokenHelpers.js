@@ -11,7 +11,7 @@ export const getBearerToken = async () => {
 
 export const setBearerToken = async (token) => {
   if (token && token.length) {
-    localStorage.setItem(AUTH_TOKEN_KEY);
+    localStorage.setItem(AUTH_TOKEN_KEY,token);
     Promise.resolve();
   } else {
     Promise.reject();

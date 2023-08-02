@@ -1,11 +1,11 @@
-import React from "react";
+import React,{useState} from "react";
+
 import { ApiClient } from "@courseApp/utils/apiClient";
 import { UserEndPoints } from "@courseApp/constants/endPoints";
 
-/// File is incomplete. You need to add input boxes to take input for users to register.
 function Register() {
-  const [email, setEmail] = React.useState("");
-  const [pswd, setPswd] = React.useState("");
+  const [email, setEmail] = useState("");
+  const [pswd, setPswd] = useState("");
 
   const handleSignupClick = async () => {
     const registerData = JSON.stringify({
@@ -17,7 +17,7 @@ function Register() {
         UserEndPoints.adminSignup(),
         registerData
       );
-     alert("Registered Successfully!")
+     alert(response.data.message)
     } catch (err) {
       alert(err);
     }
