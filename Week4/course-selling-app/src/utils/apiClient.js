@@ -16,7 +16,6 @@ const getAxiosInstance = (baseUrl) => {
 
 class ApiClient {
   constructor(baseUrl) {
-    console.log("yyyy zz", baseUrl);
     this.client = getAxiosInstance(baseUrl);
   }
   async request(config) {
@@ -24,7 +23,7 @@ class ApiClient {
       const response = await this.client.request(config);
       return response;
     } catch (err) {
-      console.log("zzz err");
+      console.log("apiClient err", err);
       throw err;
     }
   }

@@ -13,8 +13,13 @@ export const UserEndPoints = {
 };
 
 export const CoursesEndPoints = {
-  courses: () => `${API_VERSION}${USER_API_ROUTE}${COURSES_API_ROUTE}`,
-  coursesWithId: (courseId) =>
+  //ADMIN
+  coursesAdmin: () => `${API_VERSION}${ADMIN_API_ROUTE}${COURSES_API_ROUTE}`,
+  coursesAdminCId: (courseId) =>
+    `${API_VERSION}${ADMIN_API_ROUTE}${COURSES_API_ROUTE}/${courseId}`,
+  //USER
+  coursesUser: () => `${API_VERSION}${USER_API_ROUTE}${COURSES_API_ROUTE}`,
+  coursesUserCId: (courseId) =>
     `${API_VERSION}${USER_API_ROUTE}${COURSES_API_ROUTE}/${courseId}`,
   purchasedCourses: () => `${API_VERSION}${USER_API_ROUTE}/purchasedCourses`,
 };
