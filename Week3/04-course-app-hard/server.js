@@ -81,6 +81,10 @@ const courseSchema = new Schema({
     type: String,
     required: true,
   },
+  published: {
+    type: Boolean,
+    required: false,
+  },
 });
 
 // --------------------MODELS-------------------//
@@ -119,7 +123,7 @@ const postAdminSignup = (req, res, next) => {
   Admin.findOne({ username })
     .then((admin) => {
       if (admin) {
-       res.status(403).json({ message: "Admin already exists" });
+        res.status(403).json({ message: "Admin already exists" });
       } else {
         const newObj = { username, password };
         const newAdmin = new Admin(newObj);
@@ -297,7 +301,7 @@ mongoose
   .then((_res) => {
     console.log("DB Connected!");
     app.listen(PORT, () => {
-      console.log("PORT Activated!",PORT);
+      console.log("PORT Activated!", PORT);
     });
   })
   .catch((err) => console.log("DB Connect Error", err));
