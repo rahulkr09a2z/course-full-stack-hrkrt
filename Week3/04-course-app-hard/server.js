@@ -7,11 +7,14 @@ const app = express();
 const Schema = mongoose.Schema;
 const PORT = process.env.PORT || 8080;
 const SECRET = process.env.SECRET || "sEcrEt";
+const cors = require("cors");
 
+app.use(cors());
 dotenv.config();
 app.use(express.json());
 
 // --------------------CONSTANTS-------------------//
+const API_VERSION = "/api/v1";
 const Roles = {
   Admin: "admin",
   User: "user",
@@ -116,7 +119,7 @@ const postAdminSignup = (req, res, next) => {
   Admin.findOne({ username })
     .then((admin) => {
       if (admin) {
-        res.status(403).json({ message: "Admin already exists" });
+       res.status(403).json({ message: "Admin already exists" });
       } else {
         const newObj = { username, password };
         const newAdmin = new Admin(newObj);
@@ -259,29 +262,28 @@ const getAllPurchasedCourse = async (req, res, next) => {
 /**
  * Admin Routes
  */
+app.post(`${API_VERSION}/admin/signup`, postAdminSignup);
 
-app.post("/admin/signup", postAdminSignup);
+app.post(`${API_VERSION}/admin/login`, postAdminLogin);
 
-app.post("/admin/login", postAdminLogin);
+app.post(`${API_VERSION}/admin/courses`, isAuth, postCourseCreate);
 
-app.post("/admin/courses", isAuth, postCourseCreate);
+app.put(`${API_VERSION}/admin/courses/:courseId`, isAuth, putCourseUpdate);
 
-app.put("/admin/courses/:courseId", isAuth, putCourseUpdate);
-
-app.get("/admin/courses", isAuth, getAllCourses);
+app.get(`${API_VERSION}/admin/courses`, isAuth, getAllCourses);
 
 /**
  * User Routes
  */
-app.post("/users/signup", postUserSignup);
+app.post(`${API_VERSION}/users/signup`, postUserSignup);
 
-app.post("/users/login", postUserLogin);
+app.post(`${API_VERSION}/users/login`, postUserLogin);
 
-app.get("/users/courses", isAuth, getAllCourses);
+app.get(`${API_VERSION}/users/courses`, isAuth, getAllCourses);
 
-app.post("/users/courses/:courseId", isAuth, postPurchaseCourse);
+app.post(`${API_VERSION}/users/courses/:courseId`, isAuth, postPurchaseCourse);
 
-app.get("/users/purchasedCourses", isAuth, getAllPurchasedCourse);
+app.get(`${API_VERSION}/users/purchasedCourses`, isAuth, getAllPurchasedCourse);
 
 /**
  * Error Routes
@@ -295,7 +297,7 @@ mongoose
   .then((_res) => {
     console.log("DB Connected!");
     app.listen(PORT, () => {
-      console.log("PORT Activated!");
+      console.log("PORT Activated!",PORT);
     });
   })
   .catch((err) => console.log("DB Connect Error", err));
