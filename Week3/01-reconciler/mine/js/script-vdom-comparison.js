@@ -17,7 +17,7 @@ function createDomElements(existingDOM, currentDOM) {
   currentDOM.forEach((item) => {
     total++;
     var existingItem = existingDOM.find(function (el) {
-      return el.id === String(item.id);
+      return el.id === item.id;
     });
     if (existingItem) {
       // If it exists, update it
