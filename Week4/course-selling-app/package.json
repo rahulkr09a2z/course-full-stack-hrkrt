@@ -1,5 +1,5 @@
 {
-  "name": "01-easy-todo-app",
+  "name": "02-medium-course-selling-app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,13 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "server":"node todoServer.js"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "axios": "^1.4.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.14.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.37",
